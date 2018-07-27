@@ -8,7 +8,6 @@ import "./payment/Purchasable.sol";
 import "./payment/Borrowable.sol";
 import "./token/ERC20/ERC20.sol";
 import "./entity/Asset.sol";
-import "./reward/TokenPool.sol";
 
 import "./Component.sol";
 
@@ -18,7 +17,7 @@ contract Marketplace is Component {
   using SafeMath for uint256;   
 
   // Address where funds are collected
-  TokenPool private tokenPool;
+  ERC20 private token;
 
   // The Asset being sold
   Purchasable public purchasable;
@@ -50,16 +49,16 @@ contract Marketplace is Component {
 
   /**
    * @dev Constructor for this contract.
-   * @param _tokenPool - Address where collected revenue will be forwarded to
+   * @param _token - Address where collected revenue will be forwarded to
    * @param _asset - Address of the token being sold
    */
   constructor(
-    TokenPool _tokenPool, 
+    ERC20 _token, 
     Asset _asset
   ) 
     public 
   {
-    tokenPool = _tokenPool;
+    token = _token;
 
     purchasable = Purchasable(_asset);
     borrowable = Borrowable(_asset);
@@ -84,12 +83,13 @@ contract Marketplace is Component {
     require(seller != msg.sender);
 
     if (purchasable.isOnAuction(_assetId)) {
-      tokenPool.fundTo(msg.sender, price);
-      purchasable.executeAuction(msg.sender, _assetId, price);
+      //tokenPool.fundTo(msg.sender, price);
+      if (token.transfer(seller, price)) {
+        purchasable.executeAuction(msg.sender, _assetId, price);
+        emit OrderSuccess(msg.sender, seller, price);
 
-      emit OrderSuccess(msg.sender, seller, price);
-
-      return true;
+        return true;
+      }
     }
 
     return false;

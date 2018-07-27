@@ -16,6 +16,7 @@ contract Contributor is Component {
 
   function _perform() 
     internal 
+    pure
   {
     /**
       distribute from token pool to contributors

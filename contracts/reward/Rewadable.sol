@@ -4,7 +4,7 @@ import "./Evaluable.sol";
 
 contract Rewadable is Evaluable {
 
-    function _calculate()
+    function _readjust()
         internal
     {
     }
