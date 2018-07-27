@@ -22,8 +22,8 @@ contract License {
 
   /**
    */
-  function _isValidLicense(uint256 _licenseId) internal view returns (bool) {
-    return assetIdOf(_licenseId) != 0;
+  function _isValidLicense(uint256 _assetId) internal view returns (bool) {
+    return assetIdOf(_assetId) != 0;
   }
 
   /**
