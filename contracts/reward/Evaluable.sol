@@ -4,6 +4,7 @@ contract Evaluable {
 
   function _perform()
     internal
+    pure
   {
     /**
       Evaluable usability from society

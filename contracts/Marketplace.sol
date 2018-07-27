@@ -5,7 +5,6 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 import "./payment/Purchasable.sol";
-import "./payment/Borrowable.sol";
 import "./token/ERC20/ERC20.sol";
 import "./entity/Asset.sol";
 
@@ -21,7 +20,6 @@ contract Marketplace is Component {
 
   // The Asset being sold
   Purchasable public purchasable;
-  Borrowable public borrowable;
 
   /**
    * Event for token purchase logging
@@ -61,7 +59,6 @@ contract Marketplace is Component {
     token = _token;
 
     purchasable = Purchasable(_asset);
-    borrowable = Borrowable(_asset);
   }
   
   /**
@@ -107,7 +104,7 @@ contract Marketplace is Component {
     whenNotPaused
     returns (bool)
   {
-    address seller = borrowable.sellerOneOf(_assetIds);
+    address seller = purchasable.sellerOneOf(_assetIds);
     require(seller != address(0));
     require(seller != msg.sender);
 

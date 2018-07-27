@@ -1,13 +1,14 @@
 pragma solidity ^0.4.23;
 
 import "../token/NonFungible.sol";
-import "../payment/Borrowable.sol";
+import "../payment/Purchasable.sol";
+import "../payment/license.sol";
 import "../reward/Evaluable.sol";
 import "../Administrable.sol";
 
 import "./Signiture.sol";
 
-contract Asset is NonFungible, Borrowable, Evaluable, Administrable, Signiture  {
+contract Asset is NonFungible, License, Purchasable, Evaluable, Administrable, Signiture  {
 
     event AssetRegistered(uint256 _assetId);
     event AssetActivated(uint256 _assetId);
@@ -47,7 +48,7 @@ contract Asset is NonFungible, Borrowable, Evaluable, Administrable, Signiture  
     ) 
         public
         NonFungible(_name, _symbol)
-        Borrowable()
+        Purchasable()
     {
     }
 
