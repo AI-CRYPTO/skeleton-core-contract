@@ -9,11 +9,10 @@ import "./Purchasable.sol";
 contract License {
 
   struct License {
-    uint256 productId;
+    uint256 assetId;
     uint256 attributes;
     uint256 issuedTime;
     uint256 expirationTime;
-    address affiliate;
   }
 
   /**
@@ -24,14 +23,14 @@ contract License {
   /**
    */
   function _isValidLicense(uint256 _licenseId) internal view returns (bool) {
-    return productIdOf(_licenseId) != 0;
+    return assetIdOf(_licenseId) != 0;
   }
 
   /**
-   * @notice Get a license's productId
+   * @notice Get a license's assetId
    * @param _licenseId the license id
    */
-  function productIdOf(uint256 _licenseId) public view returns (uint256) {
-    return licenses[_licenseId].productId;
+  function assetIdOf(uint256 _licenseId) public view returns (uint256) {
+    return licenses[_licenseId].assetId;
   }
 }
