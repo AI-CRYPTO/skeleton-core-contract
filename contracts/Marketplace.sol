@@ -25,24 +25,28 @@ contract Marketplace is Component {
    * Event for token purchase logging
    * @param _purchaser - who paid for the tokens
    * @param _seller - who got the tokens
+   * @param _assetId - ID of asset
    * @param _value - weis paid for purchase
    */
-  event OrderSuccess(
+  event OrderReceiptReceived(
   address indexed _purchaser,
   address indexed _seller,
+  uint256 _assetId, 
   uint256 _value
   );
 
   /**
    * Event for token purchase logging
-   * @param _purchaser - who paid for the tokens
-   * @param _seller - who got the tokens
-   * @param _value - weis paid for purchase
+   * @param _investor - who paid for the tokens
+   * @param _owner - who got the tokens
+   * @param _assetId - ID of asset
+   * @param _worth - weis paid for purchase
    */
-  event LeaseSuccess(
-    address indexed _purchaser,
-    address indexed _seller,
-    uint256 _value
+  event FundReceiptReceived(
+    address indexed _investor,
+    address indexed _owner,
+    uint256 _assetId, 
+    uint256 _worth
   );
 
   /**
@@ -56,8 +60,7 @@ contract Marketplace is Component {
   ) 
     public 
   {
-    token = _token;
-
+    token = ERC20(_token);
     purchasable = Purchasable(_asset);
   }
   
@@ -83,10 +86,37 @@ contract Marketplace is Component {
       //tokenPool.fundTo(msg.sender, price);
       if (token.transfer(seller, price)) {
         purchasable.executeAuction(msg.sender, _assetId, price);
-        emit OrderSuccess(msg.sender, seller, price);
+        emit OrderReceiptReceived(msg.sender, seller, _assetId, price);
 
         return true;
       }
+    }
+
+    return false;
+  }
+
+  function fund(
+    uint256 _assetId,
+    uint256 _value
+  ) 
+    public
+    payable
+    whenNotPaused
+    returns (bool)
+  {
+    require(token.balanceOf(msg.sender) >= _value);
+    require(token.allowance(msg.sender, this) >= _value);
+
+
+    address seller = purchasable.ownerOf(_assetId);
+
+    require(seller != address(0));
+    require(seller != msg.sender);
+    
+    if (token.transferFrom(msg.sender, seller, _value)) {
+      emit FundReceiptReceived(msg.sender, seller, _assetId, _value);
+
+      return true;    
     }
 
     return false;
@@ -96,7 +126,7 @@ contract Marketplace is Component {
    * @dev Execute auction multiply 
    * @param _assetIds ID list of the AIA token to query the owner of
    */
-  function orderSeveral(
+  function fundSeveral(
     uint256[] _assetIds
   ) 
     public 
@@ -104,15 +134,8 @@ contract Marketplace is Component {
     whenNotPaused
     returns (bool)
   {
-    address seller = purchasable.sellerOneOf(_assetIds);
-    require(seller != address(0));
-    require(seller != msg.sender);
+    require(_assetIds.length > 0);
 
-    bool result = true;
-    for (uint i = 0; i < _assetIds.length; i++) {
-      result = order(_assetIds[i]) && result;
-    }
-
-    return result;
+    return true;
   }
 }

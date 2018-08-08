@@ -7,8 +7,6 @@ import "./Signiture.sol";
 
 contract Model is AssetProxy, Signiture {
 
-    uint256 public assetId;
-
     string private scrypt;
 
     /**
@@ -19,10 +17,8 @@ contract Model is AssetProxy, Signiture {
         string _scrypt
     ) 
         public 
-        AssetProxy(_asset)
+        AssetProxy(_asset, MODEL)
     {
-        assetId = _asset.register(msg.sender, MODEL);
-
         scrypt = _scrypt;
     }
 }

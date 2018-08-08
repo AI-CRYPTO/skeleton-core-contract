@@ -31,10 +31,8 @@ contract Dataset is AssetProxy, Storeable, Signiture {
         string _fileName
     ) 
         public 
-        AssetProxy(_asset)
+        AssetProxy(_asset, DATASET)
     {
-        assetId = _asset.register(msg.sender, DATASET);
-
         stored = Storage(_url);
         file = FileMeta(_fileName);
         subClass = SubClass.TextLineDataset;

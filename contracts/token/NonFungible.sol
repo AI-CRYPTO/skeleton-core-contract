@@ -26,11 +26,10 @@ contract NonFungible is ERC721, ERC721BasicToken {
   // Optional mapping for token URIs
   mapping(uint256 => string) internal tokenURIs;
 
-  /**
-   * @dev Reverts if beneficiary is not whitelisted. Can be used when extending this contract.
-   */
-  modifier isTokenOwned(uint256 _tokenId) {
-    require(ownedTokens[msg.sender][_tokenId] != 0);
+
+   modifier isTokenOwned(uint256 _tokenId) {
+    require(ownerOf(_tokenId) != 0);
+    require(msg.sender == ownerOf(_tokenId));
     _;
   }
 
