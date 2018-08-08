@@ -2,6 +2,7 @@
 
 Contracts for the standard implementation of the ERC721
 
+
 It contains
 
 –       Proof of ownership and purchase of ERC721 base
